@@ -1,6 +1,28 @@
+
+"use client";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import ArticleList from "../components/ArticleList";
+import { Article, fetchArticles } from "@/services/api";
 
 export default function Home() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  useEffect(() => {
+    fetchArticles()
+      .then((data) => {
+        console.log(data, "d");
+
+        if (Array.isArray(data)) {
+          setArticles(data);
+        } else {
+          setArticles([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching articles:", error);
+        setArticles([]);
+      });
+  }, []);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -38,6 +60,10 @@ export default function Home() {
           height={37}
           priority
         />
+      </div>
+
+      <div>
+        <ArticleList articles={articles} />
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
@@ -112,3 +138,30 @@ export default function Home() {
     </main>
   );
 }
+
+
+
+// const HomePage = () => {
+//   const [articles, setArticles] = useState<Article[]>([]);
+
+//   useEffect(() => {
+//     fetchArticles()
+//       .then((data) => {
+//         console.log(data,"d");
+        
+//         if (Array.isArray(data)) {
+//           setArticles(data);
+//         } else {
+//           setArticles([]);
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching articles:", error);
+//         setArticles([]);
+//       });
+//   }, []);
+
+//   return <ArticleList articles={articles} />;
+// };
+
+// export default HomePage;
